@@ -660,13 +660,34 @@ body {
 /* ============ MOBILE PERFORMANCE OVERRIDES ============ */
 /* On mobile we drop filter:blur (expensive on mobile GPUs) and letter-spacing
    animation (forces text reflow, not a GPU property). We keep slide+fade only.
-   Combined with the JS scene-level observer and DOM-order delay override,
-   this resolves the out-of-order and clunky-motion symptoms on small screens. */
+   We also collapse scene min-heights so content drives spacing. Desktop
+   viewport-scaled scenes create dead voids on tall phone viewports. */
 @media (max-width: 768px) {
+  /* Scenes hug their content on mobile. The desktop scene-as-viewport pacing
+     becomes content-block rhythm here. Hero and final-scene retain weight. */
+  .scene {
+    min-height: auto;
+    padding: 7vh 24px;
+  }
+  .scene-tight {
+    min-height: auto;
+    padding: 3.5vh 24px;
+  }
+  .hero {
+    min-height: 100vh;
+    padding: 9vh 24px 5vh;
+  }
+  .final-scene {
+    min-height: auto;
+    padding: 14vh 24px 12vh;
+  }
+
+  /* Slightly larger slide and slightly longer duration so motion reads on a
+     phone screen. Filter and letter-spacing animation still off for perf. */
   .r, .r-x, .r-num {
     filter: none !important;
-    transform: translateY(20px) translateZ(0);
-    transition-duration: 0.65s !important;
+    transform: translateY(32px) translateZ(0);
+    transition-duration: 0.9s !important;
   }
   .r.is-on, .r-x.is-on, .r-num.is-on {
     filter: none !important;
@@ -675,10 +696,10 @@ body {
   }
   .r-heavy {
     filter: none !important;
-    transform: translateY(28px) translateZ(0);
+    transform: translateY(44px) translateZ(0);
     letter-spacing: -0.01em;
-    transition: opacity 0.85s var(--easing),
-                transform 0.85s var(--easing) !important;
+    transition: opacity 1.1s var(--easing),
+                transform 1.1s var(--easing) !important;
     visibility: visible;
   }
   .r-heavy.is-on {
@@ -692,11 +713,6 @@ body {
     transform: translateZ(0);
     backface-visibility: hidden;
   }
-  /* Slightly tighter scenes on mobile so vertical scroll feels less heavy */
-  .scene { padding: 9vh 24px; min-height: 70vh; }
-  .scene-tight { padding: 5vh 24px; min-height: 40vh; }
-  .hero { padding: 10vh 24px 6vh; }
-  .final-scene { padding: 12vh 24px; min-height: 75vh; }
 }
 </style>
 </head>
@@ -1127,6 +1143,8 @@ body {
   // Scene-level IntersectionObserver. When a scene crosses the threshold,
   // fire every animated child at once. Their transition-delays produce the
   // cascade without each element having its own per-entry clock.
+  // rootMargin pushes the trigger line up from the viewport bottom so that
+  // animations begin as content visibly enters, not before the user sees it.
   var sceneObserver = new IntersectionObserver(function(entries) {
     entries.forEach(function(entry) {
       if (entry.isIntersecting) {
@@ -1136,7 +1154,7 @@ body {
         sceneObserver.unobserve(entry.target);
       }
     });
-  }, { threshold: 0.1, rootMargin: '0px 0px -5% 0px' });
+  }, { threshold: 0.15, rootMargin: '0px 0px -15% 0px' });
 
   document.querySelectorAll('.scene, .final-scene').forEach(function(scene) {
     sceneObserver.observe(scene);
