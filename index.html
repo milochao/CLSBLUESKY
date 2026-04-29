@@ -656,6 +656,48 @@ body {
   text-align: center;
   font-weight: 500;
 }
+
+/* ============ MOBILE PERFORMANCE OVERRIDES ============ */
+/* On mobile we drop filter:blur (expensive on mobile GPUs) and letter-spacing
+   animation (forces text reflow, not a GPU property). We keep slide+fade only.
+   Combined with the JS scene-level observer and DOM-order delay override,
+   this resolves the out-of-order and clunky-motion symptoms on small screens. */
+@media (max-width: 768px) {
+  .r, .r-x, .r-num {
+    filter: none !important;
+    transform: translateY(20px) translateZ(0);
+    transition-duration: 0.65s !important;
+  }
+  .r.is-on, .r-x.is-on, .r-num.is-on {
+    filter: none !important;
+    transform: translateY(0) translateZ(0);
+    letter-spacing: -0.025em;
+  }
+  .r-heavy {
+    filter: none !important;
+    transform: translateY(28px) translateZ(0);
+    letter-spacing: -0.01em;
+    transition: opacity 0.85s var(--easing),
+                transform 0.85s var(--easing) !important;
+    visibility: visible;
+  }
+  .r-heavy.is-on {
+    filter: none !important;
+    transform: translateY(0) translateZ(0);
+    letter-spacing: -0.01em;
+  }
+  /* Force GPU compositing on heavy display elements */
+  .hero-title, .pull-quote, .beat, .resource-final, .final-body,
+  .tr-figure, .candor-figure {
+    transform: translateZ(0);
+    backface-visibility: hidden;
+  }
+  /* Slightly tighter scenes on mobile so vertical scroll feels less heavy */
+  .scene { padding: 9vh 24px; min-height: 70vh; }
+  .scene-tight { padding: 5vh 24px; min-height: 40vh; }
+  .hero { padding: 10vh 24px 6vh; }
+  .final-scene { padding: 12vh 24px; min-height: 75vh; }
+}
 </style>
 </head>
 <body>
@@ -1056,32 +1098,49 @@ body {
 
 <script>
 (function() {
-  // Apply transition-delay from --d custom property to each animated element
-  document.querySelectorAll('.r, .r-x, .r-heavy, .r-line, .r-num').forEach(function(el) {
-    var d = getComputedStyle(el).getPropertyValue('--d').trim();
-    if (d) { el.style.transitionDelay = d; }
-  });
+  var SELECTOR = '.r, .r-x, .r-heavy, .r-line, .r-num';
+  var isMobile = window.matchMedia('(max-width: 768px)').matches;
+  var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-  // IntersectionObserver for scroll-triggered reveals
-  var observer = new IntersectionObserver(function(entries) {
-    entries.forEach(function(entry) {
-      if (entry.isIntersecting) {
-        entry.target.classList.add('is-on');
+  // Set per-scene transition delays.
+  // On desktop: use the --d value from inline styles (preserves designed cascade).
+  // On mobile: override with a simple DOM-order cascade so vertically-stacked
+  // children always fire top-to-bottom regardless of original row-layout intent.
+  document.querySelectorAll('.scene, .final-scene').forEach(function(scene) {
+    var els = scene.querySelectorAll(SELECTOR);
+    els.forEach(function(el, i) {
+      if (reduceMotion) {
+        el.style.transitionDelay = '0s';
+        el.style.transitionDuration = '0.01s';
+      } else if (isMobile) {
+        // Linear cascade in DOM order. Cap at 6 elements worth of stagger so
+        // long scenes don't drag.
+        var idx = Math.min(i, 6);
+        el.style.transitionDelay = (idx * 0.08) + 's';
+      } else {
+        var d = getComputedStyle(el).getPropertyValue('--d').trim();
+        if (d) { el.style.transitionDelay = d; }
       }
     });
-  }, { threshold: 0.15, rootMargin: '0px 0px -8% 0px' });
-
-  document.querySelectorAll('.r, .r-x, .r-heavy, .r-line, .r-num').forEach(function(el) {
-    observer.observe(el);
   });
 
-  // Reduce motion preference
-  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-    document.querySelectorAll('.r, .r-x, .r-heavy, .r-line, .r-num').forEach(function(el) {
-      el.style.transitionDuration = '0.01s';
-      el.style.transitionDelay = '0s';
+  // Scene-level IntersectionObserver. When a scene crosses the threshold,
+  // fire every animated child at once. Their transition-delays produce the
+  // cascade without each element having its own per-entry clock.
+  var sceneObserver = new IntersectionObserver(function(entries) {
+    entries.forEach(function(entry) {
+      if (entry.isIntersecting) {
+        entry.target.querySelectorAll(SELECTOR).forEach(function(el) {
+          el.classList.add('is-on');
+        });
+        sceneObserver.unobserve(entry.target);
+      }
     });
-  }
+  }, { threshold: 0.1, rootMargin: '0px 0px -5% 0px' });
+
+  document.querySelectorAll('.scene, .final-scene').forEach(function(scene) {
+    sceneObserver.observe(scene);
+  });
 })();
 </script>
 
