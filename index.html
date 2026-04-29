@@ -1,0 +1,1089 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Governance Process Risk: The Governance Challenge No One Is Managing</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..700;1,9..144,300..700&family=Source+Serif+4:ital,opsz,wght@0,8..60,300..700;1,8..60,300..700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg-cream: #F2EDE0;
+  --bg-cream-deeper: #EBE5D5;
+  --bg-dark: #1A1815;
+  --text-primary: #1A1815;
+  --text-secondary: #6B6862;
+  --text-tertiary: #9A9388;
+  --accent: #6B1F2E;
+  --accent-soft: #8B3A47;
+  --rule: #C9C2B0;
+  --rule-soft: #DDD6C4;
+  --highlight: #FAFAF8;
+
+  --serif-display: 'Fraunces', 'Source Serif 4', Georgia, serif;
+  --serif-body: 'Source Serif 4', Georgia, serif;
+
+  --easing: cubic-bezier(0.19, 1, 0.22, 1);
+  --mass-heavy: 1.8s;
+  --mass-standard: 1.2s;
+  --mass-light: 0.6s;
+
+  --max-text: 640px;
+  --max-page: 1200px;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: auto; }
+body {
+  background: var(--bg-cream);
+  color: var(--text-primary);
+  font-family: var(--serif-body);
+  font-size: 19px;
+  line-height: 1.65;
+  font-weight: 400;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+@media (max-width: 768px) {
+  body { font-size: 17px; line-height: 1.7; }
+}
+
+/* ============ SCENE BASE ============ */
+.scene {
+  min-height: 80vh;
+  padding: 12vh 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  contain: paint layout;
+}
+.scene-tight { min-height: 50vh; padding: 6vh 24px; }
+.scene-inner { max-width: var(--max-text); width: 100%; }
+.scene-wide-inner { max-width: 880px; width: 100%; }
+
+/* ============ ANIMATION PRIMITIVES ============ */
+.r {
+  opacity: 0;
+  transform: translateY(40px);
+  transition: opacity var(--mass-standard) var(--easing),
+              transform var(--mass-standard) var(--easing),
+              filter var(--mass-standard) var(--easing);
+  filter: blur(4px);
+  will-change: transform, opacity, filter;
+  visibility: hidden;
+}
+.r.is-on { opacity: 1; transform: translateY(0); filter: blur(0); visibility: visible; }
+
+.r-x {
+  opacity: 0;
+  transform: translateX(-30px) scaleX(0.95);
+  transition: opacity var(--mass-light) var(--easing),
+              transform var(--mass-light) var(--easing),
+              filter var(--mass-light) var(--easing);
+  filter: blur(4px);
+  will-change: transform, opacity, filter;
+}
+.r-x.is-on { opacity: 1; transform: translateX(0) scaleX(1); filter: blur(0); }
+
+.r-heavy {
+  opacity: 0;
+  transform: translateY(60px) skewY(2deg);
+  transition: opacity var(--mass-heavy) var(--easing),
+              transform var(--mass-heavy) var(--easing),
+              filter var(--mass-heavy) var(--easing),
+              letter-spacing var(--mass-heavy) var(--easing);
+  filter: blur(12px) brightness(1.2);
+  letter-spacing: 0.12em;
+  will-change: transform, opacity, filter, letter-spacing;
+  visibility: hidden;
+}
+.r-heavy.is-on {
+  opacity: 1;
+  transform: translateY(0) skewY(0);
+  filter: blur(0) brightness(1);
+  letter-spacing: -0.01em;
+  visibility: visible;
+}
+
+.r-line {
+  transform-origin: left;
+  transform: scaleX(0);
+  transition: transform var(--mass-heavy) var(--easing);
+  will-change: transform;
+}
+.r-line.is-on { transform: scaleX(1); }
+
+.r-num {
+  opacity: 0;
+  transform: scale(0.7) translateY(20px);
+  letter-spacing: 0.15em;
+  transition: opacity var(--mass-light) var(--easing),
+              transform var(--mass-light) var(--easing),
+              letter-spacing var(--mass-light) var(--easing),
+              filter var(--mass-light) var(--easing);
+  filter: blur(8px) brightness(1.2);
+  will-change: transform, opacity, letter-spacing, filter;
+}
+.r-num.is-on {
+  opacity: 1;
+  transform: scale(1) translateY(0);
+  letter-spacing: -0.03em;
+  filter: blur(0) brightness(1);
+}
+
+/* ============ HERO ============ */
+.hero {
+  background: var(--bg-dark);
+  color: var(--bg-cream);
+  min-height: 100vh;
+  padding: 12vh 24px 8vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+}
+.hero-inner { max-width: 880px; width: 100%; margin-top: 12vh; }
+.hero-eyebrow {
+  font-family: var(--serif-body);
+  font-size: 11px;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+  font-weight: 500;
+  margin-bottom: 96px;
+}
+.hero-title {
+  font-family: var(--serif-display);
+  font-size: clamp(38px, 5.6vw, 76px);
+  line-height: 1.02;
+  font-weight: 350;
+  letter-spacing: -0.015em;
+  font-variation-settings: 'opsz' 144, 'SOFT' 0;
+  margin-bottom: 56px;
+  max-width: 18ch;
+  color: var(--bg-cream);
+}
+.hero-byline {
+  font-family: var(--serif-body);
+  font-size: 13px;
+  letter-spacing: 0.05em;
+  color: var(--text-tertiary);
+}
+.hero-byline em { color: var(--bg-cream-deeper); font-style: italic; font-weight: 500; }
+.hero-scroll-cue {
+  font-family: var(--serif-body);
+  font-size: 10px;
+  letter-spacing: 0.4em;
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+  font-weight: 500;
+  align-self: center;
+  margin-top: auto;
+}
+
+/* ============ PROSE ============ */
+.prose-p {
+  font-family: var(--serif-body);
+  font-size: 19px;
+  line-height: 1.65;
+  margin-bottom: 1.4em;
+  color: var(--text-primary);
+}
+.prose-p em { font-style: italic; }
+.prose-p:last-child { margin-bottom: 0; }
+@media (max-width: 768px) {
+  .prose-p { font-size: 17px; line-height: 1.7; }
+}
+
+.prose-lede {
+  font-family: var(--serif-body);
+  font-size: 21px;
+  line-height: 1.55;
+  letter-spacing: -0.005em;
+  font-weight: 400;
+  color: var(--text-primary);
+  margin-bottom: 1.4em;
+}
+@media (max-width: 768px) {
+  .prose-lede { font-size: 18px; }
+}
+
+/* ============ HINGE ============ */
+.hinge {
+  font-family: var(--serif-display);
+  font-size: clamp(22px, 3vw, 30px);
+  line-height: 1.3;
+  font-weight: 400;
+  font-style: italic;
+  color: var(--text-secondary);
+  text-align: center;
+  letter-spacing: -0.005em;
+}
+
+/* ============ PULL QUOTE ============ */
+.pull-quote {
+  font-family: var(--serif-display);
+  font-size: clamp(30px, 4.4vw, 52px);
+  line-height: 1.15;
+  font-weight: 400;
+  letter-spacing: -0.015em;
+  color: var(--text-primary);
+  font-variation-settings: 'opsz' 96;
+  padding: 32px 0;
+}
+
+/* ============ WHAT vs HOW FRAME ============ */
+.frame {
+  padding: 56px 0 24px;
+}
+.frame-row {
+  padding: 28px 0;
+}
+.frame-label {
+  font-family: var(--serif-body);
+  font-size: 10px;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+  font-weight: 600;
+  margin-bottom: 14px;
+}
+.frame-content {
+  font-family: var(--serif-display);
+  font-size: clamp(24px, 3.4vw, 36px);
+  font-weight: 400;
+  line-height: 1.18;
+  letter-spacing: -0.01em;
+}
+.frame-content em {
+  font-style: italic;
+  color: var(--accent);
+  font-variation-settings: 'opsz' 144;
+}
+.frame-divider {
+  height: 1px;
+  background: var(--rule);
+  margin: 8px 0;
+}
+
+/* ============ FOUR FAILURES ============ */
+.failures-eyebrow {
+  font-family: var(--serif-body);
+  font-size: 11px;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+  font-weight: 600;
+  margin-bottom: 12px;
+}
+.failures-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0;
+  padding-top: 56px;
+  border-top: 1px solid var(--rule);
+}
+@media (max-width: 768px) {
+  .failures-grid { grid-template-columns: 1fr; }
+}
+.failure-card {
+  padding: 32px 28px 36px 0;
+  border-bottom: 1px solid var(--rule);
+  position: relative;
+}
+.failure-card:nth-child(odd) { border-right: 1px solid var(--rule); padding-right: 32px; }
+.failure-card:nth-child(even) { padding-left: 32px; padding-right: 0; }
+.failure-card:nth-child(3), .failure-card:nth-child(4) { border-bottom: none; }
+@media (max-width: 768px) {
+  .failure-card { padding: 28px 0 32px !important; border-right: none !important; border-bottom: 1px solid var(--rule) !important; }
+  .failure-card:nth-child(4) { border-bottom: none !important; }
+}
+.failure-numeral {
+  font-family: var(--serif-display);
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--accent);
+  line-height: 1;
+  letter-spacing: 0.2em;
+  margin-bottom: 18px;
+  display: block;
+}
+.failure-headline {
+  font-family: var(--serif-display);
+  font-size: clamp(20px, 2.4vw, 26px);
+  font-weight: 500;
+  line-height: 1.22;
+  margin-bottom: 14px;
+  letter-spacing: -0.01em;
+  color: var(--text-primary);
+}
+.failure-body {
+  font-family: var(--serif-body);
+  font-size: 15px;
+  line-height: 1.55;
+  color: var(--text-secondary);
+}
+.failure-card.is-named { background: linear-gradient(to right, rgba(107, 31, 46, 0.04), transparent 60%); }
+.failure-card.is-named .failure-numeral { color: var(--accent); }
+.failure-card.is-dim { opacity: 0.45; transition: opacity var(--mass-standard) var(--easing); }
+
+/* ============ CANDOR NUMERALS (small) ============ */
+.candor-numerals {
+  display: flex;
+  gap: 56px;
+  align-items: baseline;
+  flex-wrap: wrap;
+  padding: 32px 0 16px;
+  border-top: 1px solid var(--rule);
+}
+@media (max-width: 768px) {
+  .candor-numerals { gap: 32px; flex-direction: column; }
+}
+.candor-block { display: flex; flex-direction: column; max-width: 240px; }
+.candor-figure {
+  font-family: var(--serif-display);
+  font-size: clamp(56px, 8vw, 88px);
+  font-weight: 300;
+  line-height: 0.95;
+  letter-spacing: -0.025em;
+  color: var(--text-primary);
+  font-variation-settings: 'opsz' 144;
+}
+.candor-figure.accent { color: var(--accent); }
+.candor-label {
+  font-family: var(--serif-body);
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--text-secondary);
+  margin-top: 14px;
+}
+.candor-source {
+  font-family: var(--serif-body);
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+  font-weight: 500;
+  margin-top: 24px;
+  padding-top: 14px;
+  border-top: 1px solid var(--rule-soft);
+}
+
+/* ============ TOOLS DIAGRAM ============ */
+.tools-frame { padding: 48px 0 16px; }
+.tools-row {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 24px;
+  padding: 28px 0;
+  border-top: 1px solid var(--text-primary);
+  border-bottom: 1px solid var(--text-primary);
+}
+@media (max-width: 768px) {
+  .tools-row { grid-template-columns: 1fr 1fr; gap: 16px 18px; padding: 20px 0; }
+}
+.tool-block { display: flex; flex-direction: column; gap: 6px; }
+.tool-num {
+  font-family: var(--serif-body);
+  font-size: 10px;
+  letter-spacing: 0.25em;
+  color: var(--text-tertiary);
+  font-weight: 600;
+}
+.tool-label {
+  font-family: var(--serif-display);
+  font-size: clamp(15px, 1.7vw, 19px);
+  letter-spacing: -0.005em;
+  color: var(--text-primary);
+  line-height: 1.2;
+  font-weight: 500;
+}
+.tools-underneath {
+  font-family: var(--serif-display);
+  font-style: italic;
+  font-size: clamp(18px, 2.2vw, 24px);
+  color: var(--accent);
+  padding: 28px 0 0;
+  letter-spacing: -0.005em;
+  font-variation-settings: 'opsz' 96;
+}
+
+/* ============ TR INSTITUTE NUMERALS (large) ============ */
+.tr-numerals {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 48px;
+  padding: 64px 0 32px;
+  align-items: end;
+}
+@media (max-width: 768px) {
+  .tr-numerals { grid-template-columns: 1fr; gap: 32px; padding: 40px 0 24px; }
+}
+.tr-block { display: flex; flex-direction: column; }
+.tr-figure {
+  font-family: var(--serif-display);
+  font-size: clamp(72px, 13vw, 152px);
+  font-weight: 250;
+  line-height: 0.88;
+  letter-spacing: -0.04em;
+  color: var(--text-primary);
+  font-variation-settings: 'opsz' 144;
+}
+.tr-figure.accent { color: var(--accent); }
+.tr-figure-pct {
+  font-family: var(--serif-display);
+  font-size: 0.4em;
+  font-weight: 400;
+  vertical-align: super;
+  letter-spacing: 0;
+  margin-left: 4px;
+}
+.tr-label {
+  font-family: var(--serif-body);
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--text-secondary);
+  margin-top: 18px;
+  max-width: 230px;
+}
+.tr-source {
+  font-family: var(--serif-body);
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+  font-weight: 500;
+  margin-top: 32px;
+  padding-top: 16px;
+  border-top: 1px solid var(--rule-soft);
+}
+
+/* ============ TRIPLET BEATS ============ */
+.beat-stack {
+  padding: 32px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.beat {
+  font-family: var(--serif-display);
+  font-size: clamp(40px, 6.5vw, 84px);
+  font-weight: 300;
+  line-height: 1.0;
+  letter-spacing: -0.025em;
+  color: var(--text-primary);
+  font-variation-settings: 'opsz' 144;
+}
+.beat-final {
+  font-family: var(--serif-body);
+  font-size: clamp(17px, 1.9vw, 21px);
+  font-style: italic;
+  line-height: 1.4;
+  color: var(--text-secondary);
+  margin-top: 28px;
+  letter-spacing: -0.005em;
+}
+
+/* ============ ROLE SPLIT ============ */
+.role-split {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 64px;
+  padding: 48px 0 16px;
+  border-top: 1px solid var(--rule);
+}
+@media (max-width: 768px) {
+  .role-split { grid-template-columns: 1fr; gap: 32px; padding: 32px 0 16px; }
+}
+.role-block {}
+.role-name {
+  font-family: var(--serif-body);
+  font-size: 10px;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+  font-weight: 600;
+  margin-bottom: 14px;
+}
+.role-action {
+  font-family: var(--serif-display);
+  font-size: clamp(20px, 2.4vw, 26px);
+  line-height: 1.25;
+  font-weight: 400;
+  letter-spacing: -0.005em;
+  color: var(--text-primary);
+}
+.role-block.gc .role-name { color: var(--accent); }
+
+/* ============ RESOURCE TRIPLET ============ */
+.resource-stack {
+  padding: 24px 0 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.resource-line {
+  font-family: var(--serif-display);
+  font-size: clamp(22px, 2.8vw, 32px);
+  line-height: 1.35;
+  font-weight: 400;
+  letter-spacing: -0.01em;
+  color: var(--text-primary);
+}
+.resource-final {
+  font-family: var(--serif-display);
+  font-size: clamp(28px, 4vw, 44px);
+  line-height: 1.2;
+  font-weight: 400;
+  letter-spacing: -0.015em;
+  color: var(--accent);
+  margin-top: 32px;
+  font-style: italic;
+  font-variation-settings: 'opsz' 96;
+}
+
+/* ============ FINAL LINE ============ */
+.final-scene {
+  background: var(--bg-cream-deeper);
+  padding: 18vh 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 90vh;
+}
+.final-inner { max-width: 760px; width: 100%; }
+.final-eyebrow {
+  font-family: var(--serif-body);
+  font-size: 11px;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+  font-weight: 600;
+  margin-bottom: 32px;
+}
+.final-header {
+  font-family: var(--serif-display);
+  font-size: clamp(20px, 2.6vw, 28px);
+  line-height: 1.3;
+  color: var(--text-secondary);
+  font-style: italic;
+  margin-bottom: 36px;
+  letter-spacing: -0.005em;
+}
+.final-body {
+  font-family: var(--serif-display);
+  font-size: clamp(28px, 4.2vw, 52px);
+  font-weight: 350;
+  line-height: 1.18;
+  color: var(--text-primary);
+  letter-spacing: -0.015em;
+  font-variation-settings: 'opsz' 144;
+}
+.final-body em {
+  font-style: italic;
+  color: var(--accent);
+}
+
+/* ============ FOOTNOTE REFS ============ */
+.fn-ref {
+  font-size: 0.65em;
+  vertical-align: super;
+  color: var(--accent);
+  text-decoration: none;
+  margin-left: 1px;
+  font-feature-settings: 'sups';
+  font-weight: 600;
+}
+.fn-ref:hover { text-decoration: underline; }
+
+/* ============ NOTES ============ */
+.notes {
+  background: var(--bg-cream-deeper);
+  padding: 80px 24px 96px;
+  border-top: 1px solid var(--rule);
+}
+.notes-inner { max-width: 720px; margin: 0 auto; }
+.notes h2 {
+  font-family: var(--serif-body);
+  font-size: 11px;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+  font-weight: 600;
+  margin-bottom: 36px;
+}
+.notes ol { list-style: none; counter-reset: notecount; }
+.notes li {
+  font-family: var(--serif-body);
+  font-size: 14px;
+  line-height: 1.65;
+  margin-bottom: 22px;
+  counter-increment: notecount;
+  padding-left: 28px;
+  position: relative;
+  color: var(--text-secondary);
+}
+.notes li::before {
+  content: counter(notecount);
+  position: absolute;
+  left: 0;
+  top: 1px;
+  font-size: 11px;
+  color: var(--accent);
+  font-weight: 700;
+  font-variant-numeric: lining-nums;
+}
+.notes em { font-style: italic; color: var(--text-primary); }
+.notes a {
+  color: var(--accent);
+  text-decoration: none;
+  border-bottom: 1px solid var(--rule);
+  word-break: break-word;
+}
+.notes a:hover { border-bottom-color: var(--accent); }
+
+/* ============ FOOTER ============ */
+.colophon {
+  background: var(--bg-dark);
+  color: var(--text-tertiary);
+  padding: 48px 24px;
+  font-family: var(--serif-body);
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  text-align: center;
+  font-weight: 500;
+}
+</style>
+</head>
+<body>
+
+<!-- ====================================================== -->
+<!-- SCENE 1 - HERO -->
+<!-- ====================================================== -->
+<section class="scene hero">
+  <div class="hero-inner">
+    <div class="hero-eyebrow r" style="--d: 0s">CLS Blue Sky Blog &nbsp;·&nbsp; Contributed Essay</div>
+    <h1 class="hero-title r-heavy" style="--d: 0.1s">Governance Process Risk: The Governance Challenge No One Is Managing</h1>
+    <div class="hero-byline r" style="--d: 0.7s">By <em>Ariel Goldfarb</em></div>
+  </div>
+  <div class="hero-scroll-cue r" style="--d: 1.2s">Scroll</div>
+</section>
+
+<!-- ====================================================== -->
+<!-- SCENE 2 - KNOWN CHALLENGES, ANOTHER FACTOR -->
+<!-- ====================================================== -->
+<section class="scene">
+  <div class="scene-inner">
+    <p class="prose-lede r">Boards always face the usual obstacles to effective decision making such as incomplete information, competing priorities, and the pressures of time. These are known challenges, and governance has developed effective tools to address them. But there is another factor, just as consequential to decision quality and present in every boardroom, that rarely receives the same level of attention. <strong style="font-weight: 500;">It is the conditions under which the table decides.</strong></p>
+  </div>
+</section>
+
+<!-- ====================================================== -->
+<!-- SCENE 3 - WHAT vs HOW (NAMING) -->
+<!-- ====================================================== -->
+<section class="scene">
+  <div class="scene-inner">
+    <p class="prose-p r">This is <em>Governance Process Risk</em>: the risk embedded not in what a board decides, but in <em>how</em> it decides. Whether the full range of judgment in the room actually shapes the outcome, or only the loudest voices do. Whether assumptions get examined or simply carried forward. Whether the alignment that forms reflects genuine shared understanding, or a room of nods covering different reads of what was just decided.</p>
+
+    <div class="frame">
+      <div class="frame-row">
+        <div class="frame-label r-x" style="--d: 0s">Above</div>
+        <div class="frame-content r" style="--d: 0.1s">What a board decides</div>
+      </div>
+      <div class="frame-divider r-line" style="--d: 0.3s"></div>
+      <div class="frame-row">
+        <div class="frame-label r-x" style="--d: 0.5s">Underneath</div>
+        <div class="frame-content r" style="--d: 0.6s"><em>How</em> it decides</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ====================================================== -->
+<!-- SCENE 4 - NOT A SOFT CONCEPT -->
+<!-- ====================================================== -->
+<section class="scene">
+  <div class="scene-inner">
+    <p class="prose-p r">It is not a soft concept. Boards that reach decisions on unexamined ground produce outcomes that are more tenuous, more likely to be revisited, and more likely to fail under pressure. The cost shows up later, and rarely gets attributed to the process that produced it.</p>
+  </div>
+</section>
+
+<!-- ====================================================== -->
+<!-- SCENE 5a - FOUR FAILURES SETUP -->
+<!-- ====================================================== -->
+<section class="scene scene-tight">
+  <div class="scene-inner">
+    <p class="prose-p r">The shape of the risk is well documented. In <em>Four Failures of Deliberating Groups</em>, Cass Sunstein and Reid Hastie identify four predictable ways groups go wrong when they decide together.<a href="#fn1" class="fn-ref">1</a></p>
+  </div>
+</section>
+
+<!-- ====================================================== -->
+<!-- SCENE 5b - FOUR FAILURES CARDS -->
+<!-- ====================================================== -->
+<section class="scene">
+  <div class="scene-wide-inner">
+    <div class="failures-eyebrow r">Four predictable ways groups go wrong</div>
+    <div class="failures-grid">
+      <div class="failure-card r" id="failure-1" style="--d: 0s">
+        <span class="failure-numeral">01 / Amplification</span>
+        <h3 class="failure-headline">Errors get amplified rather than corrected,</h3>
+        <p class="failure-body">as individual mistakes harden into group conviction through repetition.</p>
+      </div>
+      <div class="failure-card r" id="failure-2" style="--d: 0.12s">
+        <span class="failure-numeral">02 / Cascade</span>
+        <h3 class="failure-headline">Cascades take hold,</h3>
+        <p class="failure-body">as the judgments of early speakers shape those of later ones, and successors withhold what they actually know.</p>
+      </div>
+      <div class="failure-card r" id="failure-3" style="--d: 0.19s">
+        <span class="failure-numeral">03 / Polarization</span>
+        <h3 class="failure-headline">Groups polarize,</h3>
+        <p class="failure-body">ending up in more extreme positions than any single member arrived with.</p>
+      </div>
+      <div class="failure-card r" id="failure-4" style="--d: 0.24s">
+        <span class="failure-numeral">04 / Shared-information bias</span>
+        <h3 class="failure-headline">Shared information crowds out unshared:</h3>
+        <p class="failure-body">what only one or two directors know rarely surfaces, because deliberation tends to recycle what everyone in the room already shares.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ====================================================== -->
+<!-- SCENE 6 - NOT EXOTIC FAILURE MODES -->
+<!-- ====================================================== -->
+<section class="scene scene-tight">
+  <div class="scene-inner">
+    <p class="prose-p r">These are not exotic failure modes. Any director who has sat through a board meeting where the conversation felt foregone before it started, or where the strongest dissenting view got nodded past, has seen one of them in action.</p>
+  </div>
+</section>
+
+<!-- ====================================================== -->
+<!-- SCENE 7a - CANDOR / PwC -->
+<!-- ====================================================== -->
+<section class="scene">
+  <div class="scene-inner">
+    <p class="prose-p r">The candor piece is the most visible. According to PwC's <em>2020 Annual Corporate Directors Survey</em>, one in three directors finds it difficult to voice a dissenting view in the boardroom, and over half say it leads to muffled dissent.<a href="#fn2" class="fn-ref">2</a></p>
+
+    <div class="candor-numerals">
+      <div class="candor-block">
+        <div class="candor-figure r-num accent" style="--d: 0s">1 in 3</div>
+        <div class="candor-label r" style="--d: 0.3s">directors find it difficult to voice a dissenting view in the boardroom</div>
+      </div>
+      <div class="candor-block">
+        <div class="candor-figure r-num" style="--d: 0.15s">Over half</div>
+        <div class="candor-label r" style="--d: 0.45s">say it leads to muffled dissent</div>
+      </div>
+    </div>
+    <div class="candor-source r" style="--d: 0.65s">PwC · 2020 Annual Corporate Directors Survey</div>
+  </div>
+</section>
+
+<!-- ====================================================== -->
+<!-- SCENE 7b - CANDOR PROSE -->
+<!-- ====================================================== -->
+<section class="scene scene-tight">
+  <div class="scene-inner">
+    <p class="prose-p r">The most commonly cited reason is not disagreement with the decision itself but a desire to preserve relationships with peers. What people say in a board meeting and what they actually think are often not the same thing. The gap between the two is where decision quality gets lost.</p>
+  </div>
+</section>
+
+<!-- ====================================================== -->
+<!-- SCENE 8 - CANDOR REVERSAL -->
+<!-- ====================================================== -->
+<section class="scene">
+  <div class="scene-wide-inner">
+    <p class="prose-p r" style="max-width: var(--max-text); margin-left: auto; margin-right: auto;">But candor is only one of the four failures, and arguably not the most damaging. Cascades and shared-information bias do their work even when every voice in the room is candid. A board can be perfectly civil, perfectly transparent, and still arrive at a decision that no one in the room would have endorsed had the conversation gone differently.</p>
+
+    <div class="failures-eyebrow r" style="--d: 0.3s; margin-top: 56px;">Candor-resistant failures</div>
+    <div class="failures-grid">
+      <div class="failure-card is-dim r" style="--d: 0.4s">
+        <span class="failure-numeral">01 / Amplification</span>
+        <h3 class="failure-headline">Errors get amplified rather than corrected</h3>
+      </div>
+      <div class="failure-card is-named r" style="--d: 0.45s">
+        <span class="failure-numeral">02 / Cascade</span>
+        <h3 class="failure-headline">Cascades take hold</h3>
+      </div>
+      <div class="failure-card is-dim r" style="--d: 0.5s">
+        <span class="failure-numeral">03 / Polarization</span>
+        <h3 class="failure-headline">Groups polarize</h3>
+      </div>
+      <div class="failure-card is-named r" style="--d: 0.55s">
+        <span class="failure-numeral">04 / Shared-information bias</span>
+        <h3 class="failure-headline">Shared information crowds out unshared</h3>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ====================================================== -->
+<!-- SCENE 9 - CONVENTIONAL TOOLS GAP -->
+<!-- ====================================================== -->
+<section class="scene">
+  <div class="scene-wide-inner">
+    <p class="prose-p r" style="max-width: var(--max-text); margin-left: auto; margin-right: auto;">This is the part conventional governance tools are not built for. Charters, agendas, executive sessions, board evaluations: these address composition and conduct. They do not address the deliberative process itself. The conditions that determine which assumptions get tested, which dissents get heard, and which alignments are real continue to operate underneath whatever the agenda says.</p>
+
+    <div class="tools-frame">
+      <div class="tools-row">
+        <div class="tool-block">
+          <div class="tool-num r-x" style="--d: 0s">01</div>
+          <div class="tool-label r" style="--d: 0.05s">Charters</div>
+        </div>
+        <div class="tool-block">
+          <div class="tool-num r-x" style="--d: 0.12s">02</div>
+          <div class="tool-label r" style="--d: 0.16s">Agendas</div>
+        </div>
+        <div class="tool-block">
+          <div class="tool-num r-x" style="--d: 0.19s">03</div>
+          <div class="tool-label r" style="--d: 0.22s">Executive sessions</div>
+        </div>
+        <div class="tool-block">
+          <div class="tool-num r-x" style="--d: 0.24s">04</div>
+          <div class="tool-label r" style="--d: 0.27s">Board evaluations</div>
+        </div>
+      </div>
+      <div class="tools-underneath r" style="--d: 0.5s">Process Risk operating underneath</div>
+    </div>
+  </div>
+</section>
+
+<!-- ====================================================== -->
+<!-- SCENE 10 - THE VERDICT (PULL QUOTE) -->
+<!-- ====================================================== -->
+<section class="scene">
+  <div class="scene-inner">
+    <p class="prose-p r">That is what makes Process Risk distinctive.</p>
+    <p class="pull-quote r-heavy" style="--d: 0.3s">It is the only governance risk most boards are not actively managing.</p>
+  </div>
+</section>
+
+<!-- ====================================================== -->
+<!-- SCENE 11 - HINGE -->
+<!-- ====================================================== -->
+<section class="scene scene-tight">
+  <div class="scene-inner">
+    <p class="hinge r">For the corporate legal community, this lands in a particular way.</p>
+  </div>
+</section>
+
+<!-- ====================================================== -->
+<!-- SCENE 12a - COO/GC ANECDOTE OPEN -->
+<!-- ====================================================== -->
+<section class="scene scene-tight">
+  <div class="scene-inner">
+    <p class="prose-p r">Consider one executive's experience. She was hired as General Counsel at a financial services firm. Over time, she took on an additional role: Chief Operating Officer. When asked which title she values most, her answer is immediate: COO.</p>
+  </div>
+</section>
+
+<!-- ====================================================== -->
+<!-- SCENE 12b - COO/GC ANECDOTE BODY -->
+<!-- ====================================================== -->
+<section class="scene scene-tight">
+  <div class="scene-inner">
+    <p class="prose-p r">Not because she has abandoned her legal role, or because the work is not important. Because when she sat at the board table as General Counsel, the role defined what the board was prepared to receive from her. The COO title opened a different door: earlier conversations, broader questions, a conversation at the start of things rather than the tightening up afterward.</p>
+  </div>
+</section>
+
+<!-- ====================================================== -->
+<!-- SCENE 12c - TRIPLET BEAT -->
+<!-- ====================================================== -->
+<section class="scene">
+  <div class="scene-inner">
+    <div class="beat-stack">
+      <div class="beat r-heavy" style="--d: 0s">Same person.</div>
+      <div class="beat r-heavy" style="--d: 0.16s">Same skills.</div>
+      <div class="beat r-heavy" style="--d: 0.24s">Same table.</div>
+      <div class="beat-final r" style="--d: 0.7s">The only thing that changed was the title on her business card.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ====================================================== -->
+<!-- SCENE 13a - ANECDOTE REFRAME OPEN -->
+<!-- ====================================================== -->
+<section class="scene scene-tight">
+  <div class="scene-inner">
+    <p class="prose-p r">On its surface, the story is about a capable executive. Beneath that, it is itself an example of Process Risk in operation.</p>
+  </div>
+</section>
+
+<!-- ====================================================== -->
+<!-- SCENE 13b - ANECDOTE REFRAME BODY -->
+<!-- ====================================================== -->
+<section class="scene">
+  <div class="scene-inner">
+    <p class="prose-p r">The board's process for receiving input was governed by title, not by the quality of the input. The cognitive contribution available to them did not change. What changed was whether the deliberative process let it in.</p>
+
+    <div class="frame">
+      <div class="frame-row">
+        <div class="frame-label r-x" style="--d: 0s">Above</div>
+        <div class="frame-content r" style="--d: 0.1s">Same input</div>
+      </div>
+      <div class="frame-divider r-line" style="--d: 0.3s"></div>
+      <div class="frame-row">
+        <div class="frame-label r-x" style="--d: 0.5s">Underneath</div>
+        <div class="frame-content r" style="--d: 0.6s"><em>Different reception</em></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ====================================================== -->
+<!-- SCENE 14a - TR INSTITUTE NUMERALS -->
+<!-- ====================================================== -->
+<section class="scene">
+  <div class="scene-wide-inner">
+    <p class="prose-p r" style="max-width: var(--max-text); margin-left: auto; margin-right: auto;">The pattern is reasonably common. According to the Thomson Reuters Institute's <em>2026 State of the Corporate Law Department Report</em>, 86% of General Counsel believe their departments are significant contributors to organizational objectives, while only 17% of C-Suite executives agree. And 42% say the legal department contributes little or nothing at all.<a href="#fn3" class="fn-ref">3</a></p>
+
+    <div class="tr-numerals">
+      <div class="tr-block">
+        <div class="tr-figure r-num" style="--d: 0s">86<span class="tr-figure-pct">%</span></div>
+        <div class="tr-label r" style="--d: 0.3s">of General Counsel believe their departments are significant contributors to organizational objectives</div>
+      </div>
+      <div class="tr-block">
+        <div class="tr-figure r-num" style="--d: 0.12s">17<span class="tr-figure-pct">%</span></div>
+        <div class="tr-label r" style="--d: 0.4s">of C-Suite executives agree</div>
+      </div>
+      <div class="tr-block">
+        <div class="tr-figure r-num accent" style="--d: 0.19s">42<span class="tr-figure-pct">%</span></div>
+        <div class="tr-label r" style="--d: 0.5s">say the legal department contributes little or nothing at all</div>
+      </div>
+    </div>
+    <div class="tr-source r" style="--d: 0.7s; max-width: var(--max-text); margin-left: auto; margin-right: auto;">Thomson Reuters Institute · 2026 State of the Corporate Law Department Report</div>
+  </div>
+</section>
+
+<!-- ====================================================== -->
+<!-- SCENE 14b - TR INSTITUTE FRAMING -->
+<!-- ====================================================== -->
+<section class="scene">
+  <div class="scene-inner">
+    <p class="prose-p r">The gap is large enough that more than one reading is available: GCs may be overestimating their contribution, C-Suites may be undervaluing it, or both. <strong style="font-weight: 500;">What is not up for debate is the size of the gap.</strong> Either way, a substantial pool of analytical capacity is sitting outside the conversation it could most usefully be in.</p>
+  </div>
+</section>
+
+<!-- ====================================================== -->
+<!-- SCENE 15a - OPPORTUNITY OPEN -->
+<!-- ====================================================== -->
+<section class="scene scene-tight">
+  <div class="scene-inner">
+    <p class="prose-p r"><strong style="font-weight: 500;">Which is the opportunity.</strong> The GC role contains training that maps onto each of the four failures.</p>
+  </div>
+</section>
+
+<!-- ====================================================== -->
+<!-- SCENE 15b - GC TRAINING PROSE -->
+<!-- ====================================================== -->
+<section class="scene">
+  <div class="scene-inner">
+    <p class="prose-p r">Identifying where a legal argument is more flimsy than it appears trains the same instinct that catches a flimsy board assumption. Separating fact from inference is the same work in a deposition or a strategy memo. And surfacing what is driving a stated view, rather than only what is being said, is the same discipline whether the speaker is a witness or a director.</p>
+  </div>
+</section>
+
+<!-- ====================================================== -->
+<!-- SCENE 16 - NONE OF THIS REQUIRES REINVENTION -->
+<!-- ====================================================== -->
+<section class="scene">
+  <div class="scene-inner">
+    <p class="prose-p r">None of this requires reinventing the role. The GC's existing analytical posture, already aimed at legal substance, simply turns toward the deliberative process itself. The corporate secretary handles the meeting; the GC, well positioned, handles the integrity of how the room is thinking.</p>
+
+    <div class="role-split">
+      <div class="role-block">
+        <div class="role-name r-x" style="--d: 0s">Corporate Secretary</div>
+        <div class="role-action r" style="--d: 0.1s">handles the meeting</div>
+      </div>
+      <div class="role-block gc">
+        <div class="role-name r-x" style="--d: 0.18s">General Counsel</div>
+        <div class="role-action r" style="--d: 0.28s">handles the integrity of how the room is thinking</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ====================================================== -->
+<!-- SCENE 17a - RESOURCE OPENING -->
+<!-- ====================================================== -->
+<section class="scene scene-tight">
+  <div class="scene-inner">
+    <p class="prose-p r">For boards that want to take Process Risk seriously, this is among the most accessible places to start.</p>
+  </div>
+</section>
+
+<!-- ====================================================== -->
+<!-- SCENE 17b - RESOURCE TRIPLET + INVITATION -->
+<!-- ====================================================== -->
+<section class="scene">
+  <div class="scene-inner">
+    <div class="resource-stack">
+      <div class="resource-line r" style="--d: 0s">The resource is already in the room.</div>
+      <div class="resource-line r" style="--d: 0.12s">The training already exists.</div>
+      <div class="resource-line r" style="--d: 0.19s">The seat at the table is already there.</div>
+      <div class="resource-final r-heavy" style="--d: 0.6s">What is missing, in many cases, is the invitation.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ====================================================== -->
+<!-- SCENE 18 - FINAL LINE -->
+<!-- ====================================================== -->
+<section class="final-scene">
+  <div class="final-inner">
+    <div class="final-eyebrow r">For the General Counsel reading this</div>
+    <p class="final-body r-heavy" style="--d: 0.3s">The work that could most meaningfully elevate the contribution of the role, real and <em>perceived</em>, is the work most boards do not yet know to ask for.</p>
+  </div>
+</section>
+
+<!-- ====================================================== -->
+<!-- NOTES -->
+<!-- ====================================================== -->
+<section class="notes">
+  <div class="notes-inner">
+    <h2>Notes</h2>
+    <ol>
+      <li id="fn1">Cass R. Sunstein &amp; Reid Hastie, <em>Four Failures of Deliberating Groups</em>, U. of Chicago Law &amp; Economics Working Paper No. 401 (2008). <a href="https://ssrn.com/abstract=1121400" target="_blank" rel="noopener">https://ssrn.com/abstract=1121400</a></li>
+      <li id="fn2">PwC, <em>Annual Corporate Directors Survey</em>, PwC Governance Insights Center, 2020. <a href="https://corpgov.law.harvard.edu/2020/11/01/2020-annual-corporate-directors-survey/" target="_blank" rel="noopener">https://corpgov.law.harvard.edu/2020/11/01/2020-annual-corporate-directors-survey/</a></li>
+      <li id="fn3">Thomson Reuters Institute, <em>2026 State of the Corporate Law Department Report</em>, Thomson Reuters, 2026. <a href="https://www.thomsonreuters.com/en-us/posts/corporates/state-of-the-corporate-law-department-report-2026/" target="_blank" rel="noopener">https://www.thomsonreuters.com/en-us/posts/corporates/state-of-the-corporate-law-department-report-2026/</a></li>
+    </ol>
+  </div>
+</section>
+
+<footer class="colophon">
+  Concentric Growth Partners &nbsp;·&nbsp; Governance Process Risk &nbsp;·&nbsp; 2026
+</footer>
+
+<script>
+(function() {
+  // Apply transition-delay from --d custom property to each animated element
+  document.querySelectorAll('.r, .r-x, .r-heavy, .r-line, .r-num').forEach(function(el) {
+    var d = getComputedStyle(el).getPropertyValue('--d').trim();
+    if (d) { el.style.transitionDelay = d; }
+  });
+
+  // IntersectionObserver for scroll-triggered reveals
+  var observer = new IntersectionObserver(function(entries) {
+    entries.forEach(function(entry) {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('is-on');
+      }
+    });
+  }, { threshold: 0.15, rootMargin: '0px 0px -8% 0px' });
+
+  document.querySelectorAll('.r, .r-x, .r-heavy, .r-line, .r-num').forEach(function(el) {
+    observer.observe(el);
+  });
+
+  // Reduce motion preference
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    document.querySelectorAll('.r, .r-x, .r-heavy, .r-line, .r-num').forEach(function(el) {
+      el.style.transitionDuration = '0.01s';
+      el.style.transitionDelay = '0s';
+    });
+  }
+})();
+</script>
+
+</body>
+</html>
